@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const userModel=require("./users");
+const complaintModel = require("./complaints")
 const passport=require("passport");
 
 
@@ -35,21 +36,52 @@ router.post('/register', (req, res) => {
     });
 });
 
+router.get("/login",function(req,res){
+  res.render("login",{error:req.flash('error')});
+});
 router.post("/login",passport.authenticate("local",{
   successRedirect:"/home",
   failureRedirect:"/login",
   failureFlash:true
-}) , function(req,res){});
+}) , function(req,res){
 
-router.get("/login",function(req,res){
-  res.render("login",{error:req.flash('error')});
 });
+
 router.get("/home", isLoggedIn, async function(req,res){
   // res.render("home",{error:req.flash('error')},users);
   const user=await userModel.findOne({username:req.session.passport.user});
   res.render('home', {footer: true,user});
 });
 
+router.post('/createComplaint', async function(req, res) {
+    const user=await userModel.findOne({username:req.session.passport.user});
+  
+    const complaint=await complaintModel.create({
+      createdBy:user._id,
+      title:req.body.title,
+      content:req.body.content,
+    })
+  
+      user.complaints.push(complaint._id);
+      await user.save();
+      // res.redirect('/home');
+      res.json(complaint);
+  });
+
+  router.get("/allcomplaint", async function(req, res) {
+    const complaints = await complaintModel.find().populate("createdBy");
+
+
+    console.log("req.session:", req.session);
+    console.log("req.session.passport:", req.session.passport);
+    // console.log("req.session.passport.user:", req.session.passport.user);
+
+
+    // const user = await userModel.findOne({ username: repassportq.session..user });
+    // console.log(user);
+    // res.render('allcomplaint', { complaints, user }); // Pass 'user' object here
+    res.send("ok");
+});
 
 
 router.get("/logout",function(req,res){

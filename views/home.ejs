@@ -6,7 +6,10 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Hello ji </h1>
-    <h2><%= user.fullName  %></h2>
+    <form action="/createComplaint" method="post">
+        <input type="text" name="title" placeholder="title">
+        <input type="text" name="content" placeholder="content">
+        <input class="w-full px-2 py-2 bg-blue-500 rounded-md" type="submit" value="Post">
+    </form>
 </body>
 </html>

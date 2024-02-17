@@ -13,10 +13,6 @@ const UserSchema = new mongoose.Schema({
   password: {
     type:String,
   },
-  cases: [{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:"Post"
-  }],
   email: {
     type: String,
     required: true,
@@ -25,7 +21,11 @@ const UserSchema = new mongoose.Schema({
   fullName: {
     type:String,
     required:true,
-  }
+  },
+  complaints: [{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"Complaint"
+  }],
 });
 
 UserSchema.plugin(plm);
